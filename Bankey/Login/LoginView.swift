@@ -75,20 +75,18 @@ extension LoginView {
 
 //MARK: - UITextFieldDelegate
 extension LoginView: UITextFieldDelegate {
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        usernameTextField.endEditing(true)
-//        passwordTextField.endEditing(true)
-//
-//        return true
-//    }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        usernameTextField.endEditing(true)
+        passwordTextField.endEditing(true)
+
+        return true
+    }
     
-//    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-//        if textField != "" {
-//            return true
-//        }
-//    }
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        return true
+    }
     
-//    func textFieldDidEndEditing(_ textField: UITextField) {
-//
-//    }
+    func textFieldDidEndEditing(_ textField: UITextField) {
+
+    }
 }
