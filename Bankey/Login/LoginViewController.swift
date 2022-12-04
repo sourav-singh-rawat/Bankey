@@ -44,14 +44,14 @@ extension LoginViewController {
         appTitle.textAlignment = .center
         appTitle.textColor = .black
         appTitle.numberOfLines = 0
-        appTitle.font = UIFont.boldSystemFont(ofSize: 38)
+        appTitle.font = UIFont.preferredFont(forTextStyle: .largeTitle)
         
         appDescription.translatesAutoresizingMaskIntoConstraints = false
         appDescription.text = Constant.appDescription
         appDescription.textAlignment = .center
         appDescription.textColor = .black
         appDescription.numberOfLines = 0
-        appDescription.font = UIFont.boldSystemFont(ofSize: 20)
+        appDescription.font = UIFont.preferredFont(forTextStyle: .title3)
         
         loginView.translatesAutoresizingMaskIntoConstraints = false
         
