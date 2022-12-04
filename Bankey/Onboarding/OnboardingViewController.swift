@@ -12,11 +12,26 @@ class OnboardingViewController: UIViewController {
     let stackView = UIStackView()
     
     let imageView = UIImageView()
+    var imageName: String?
     
     let label = UILabel()
+    let labelText: String?
+    
+    init(imageName:String,labelText:String){
+        self.imageName = imageName
+        self.labelText = labelText
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.backgroundColor = .white
         
         style()
         layout()
@@ -33,7 +48,7 @@ extension OnboardingViewController {
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "delorean")
+        configureImageView()
         
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.preferredFont(forTextStyle: .title3)
@@ -41,7 +56,7 @@ extension OnboardingViewController {
         label.adjustsFontSizeToFitWidth = true
         label.textColor = .black
         label.textAlignment = .center
-        label.text = "Bankey is faster, easier to use, and has a brand new look and feel that will make you feel like you are back in 1989."
+        configureLabel()
     }
     
     private func layout() {
@@ -58,4 +73,21 @@ extension OnboardingViewController {
         ])
     }
     
+    private func configureImageView() {
+        guard let imageName = self.imageName else {
+            assertionFailure("Image name can't be nil")
+            return
+        }
+        
+        imageView.image = UIImage(named: imageName)
+    }
+    
+    private func configureLabel(){
+        guard let labelText = self.labelText else {
+            assertionFailure("Label text can't be nil")
+            return
+        }
+        
+        label.text = labelText
+    }
 }
