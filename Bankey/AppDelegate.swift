@@ -35,8 +35,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: LoginViewControllerDelegate {
     func didLogin() {
-        window?.rootViewController = onboardingContainerViewController
         onboardingContainerViewController.delegate = self
+        setRootViewController(onboardingContainerViewController)
     }
 }
 
