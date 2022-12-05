@@ -7,7 +7,15 @@
 
 import UIKit
 
+protocol OnboardingViewControllerDelegate: AnyObject {
+    func onBackPressed()
+    func onNextPressed()
+    func onDonePressed()
+}
+
 class OnboardingViewController: UIViewController {
+    
+    weak var delegate: OnboardingViewControllerDelegate?
     
     let stackView = UIStackView()
     
@@ -17,9 +25,24 @@ class OnboardingViewController: UIViewController {
     let label = UILabel()
     let labelText: String?
     
-    init(imageName:String,labelText:String){
+    let backButton = UIButton(type: .system)
+    
+    let nextButton = UIButton(type: .system)
+    
+    let isFirstPage: Bool
+    let isLastPage: Bool
+    
+    init(
+        imageName: String,
+        labelText: String,
+        isFirstPage: Bool = false,
+        isLastPage: Bool = false
+    ){
         self.imageName = imageName
         self.labelText = labelText
+        
+        self.isFirstPage = isFirstPage
+        self.isLastPage = isLastPage
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -57,6 +80,16 @@ extension OnboardingViewController {
         label.textColor = .black
         label.textAlignment = .center
         configureLabel()
+        
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        backButton.setTitle("Back", for: [])
+        backButton.addTarget(self, action: #selector(onBackPressed), for: .primaryActionTriggered)
+        configureBackButton()
+        
+        nextButton.translatesAutoresizingMaskIntoConstraints = false
+        nextButton.setTitle("Next", for: [])
+        nextButton.addTarget(self, action: #selector(onNextPressed), for: .primaryActionTriggered)
+        configureNextButton()
     }
     
     private func layout() {
@@ -64,6 +97,8 @@ extension OnboardingViewController {
         stackView.addArrangedSubview(label)
         
         view.addSubview(stackView)
+        view.addSubview(backButton)
+        view.addSubview(nextButton)
         
         NSLayoutConstraint.activate([
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -71,8 +106,23 @@ extension OnboardingViewController {
             stackView.leadingAnchor.constraint(equalToSystemSpacingAfter: view.leadingAnchor, multiplier: 1),
             view.trailingAnchor.constraint(equalToSystemSpacingAfter: stackView.trailingAnchor, multiplier: 1)
         ])
+        
+        NSLayoutConstraint.activate([
+            view.bottomAnchor.constraint(equalToSystemSpacingBelow: backButton.bottomAnchor, multiplier: 1),
+            backButton.leadingAnchor.constraint(equalToSystemSpacingAfter: view.leadingAnchor, multiplier: 2)
+        ])
+        
+        NSLayoutConstraint.activate([
+            view.bottomAnchor.constraint(equalToSystemSpacingBelow: nextButton.bottomAnchor, multiplier: 1),
+            view.trailingAnchor.constraint(equalToSystemSpacingAfter: nextButton.trailingAnchor, multiplier: 2)
+        ])
     }
     
+    
+}
+
+//MARK: - Configure
+extension OnboardingViewController {
     private func configureImageView() {
         guard let imageName = self.imageName else {
             assertionFailure("Image name can't be nil")
@@ -89,5 +139,32 @@ extension OnboardingViewController {
         }
         
         label.text = labelText
+    }
+    
+    private func configureBackButton() {
+        if isFirstPage {
+            backButton.isHidden = true
+        }
+    }
+    
+    private func configureNextButton() {
+        if isLastPage {
+            nextButton.setTitle("Done", for: [])
+        }
+    }
+}
+
+//MARK: - Action
+extension OnboardingViewController {
+    @objc func onBackPressed() {
+        delegate?.onBackPressed()
+    }
+    
+    @objc func onNextPressed() {
+        if isLastPage{
+            delegate?.onDonePressed()
+        }else {
+            delegate?.onNextPressed()
+        }
     }
 }
