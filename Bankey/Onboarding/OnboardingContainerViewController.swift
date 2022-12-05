@@ -7,11 +7,17 @@
 
 import UIKit
 
+protocol OnboardingContainerViewControllerDelegate: AnyObject {
+    func didFinishOnboarding()
+}
+
 class OnboardingContainerViewController: UIViewController {
 
+    weak var delegate: OnboardingContainerViewControllerDelegate?
+    
     let pageViewController: UIPageViewController
     var pages = [UIViewController]()
-    var currentVC: UIViewController
+    var currentVC: OnboardingViewController
     
     let closeButton = UIButton(type: .system)
     
@@ -20,7 +26,8 @@ class OnboardingContainerViewController: UIViewController {
         
         let page1 = OnboardingViewController(
             imageName: "delorean",
-            labelText: "Bankey is faster, easier to use, and has a brand new look and feel that will make you feel like you are back in 1989."
+            labelText: "Bankey is faster, easier to use, and has a brand new look and feel that will make you feel like you are back in 1989.",
+            isFirstPage: true
         )
         let page2 = OnboardingViewController(
             imageName: "thumbs",
@@ -28,16 +35,19 @@ class OnboardingContainerViewController: UIViewController {
         )
         let page3 = OnboardingViewController(
             imageName: "world",
-            labelText: "Learn more at www.bankey.com."
+            labelText: "Learn more at www.bankey.com.",
+            isLastPage: true
         )
         
         pages.append(page1)
         pages.append(page2)
         pages.append(page3)
         
-        currentVC = pages.first!
+        currentVC = pages.first! as! OnboardingViewController
         
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        
+        currentVC.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -72,7 +82,6 @@ class OnboardingContainerViewController: UIViewController {
         ])
         
         pageViewController.setViewControllers([pages.first!], direction: .forward, animated: false, completion: nil)
-        currentVC = pages.first!
     }
     
     private func style() {
@@ -105,14 +114,16 @@ extension OnboardingContainerViewController: UIPageViewControllerDataSource {
     private func getPreviousViewController(from viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController), index - 1 >= 0 else { return nil }
         
-        currentVC = pages[index - 1]
+        currentVC = pages[index - 1] as! OnboardingViewController
+        currentVC.delegate = self
         return pages[index - 1]
     }
 
     private func getNextViewController(from viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController), index + 1 < pages.count else { return nil }
         
-        currentVC = pages[index + 1]
+        currentVC = pages[index + 1] as! OnboardingViewController
+        currentVC.delegate = self
         return pages[index + 1]
     }
 
@@ -128,6 +139,21 @@ extension OnboardingContainerViewController: UIPageViewControllerDataSource {
 //MARK: - Action
 extension OnboardingContainerViewController {
     @objc func onClosePressed(sender: UIButton) {
-        //TODO:
+        delegate?.didFinishOnboarding()
     }
+}
+
+extension OnboardingContainerViewController: OnboardingViewControllerDelegate {
+    func onBackPressed() {
+        print("back pressed")
+    }
+    
+    func onNextPressed() {
+        print("next pressed")
+    }
+    
+    func onDonePressed() {
+        delegate?.didFinishOnboarding()
+    }
+    
 }
