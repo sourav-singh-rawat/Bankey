@@ -145,11 +145,11 @@ extension OnboardingContainerViewController {
 
 extension OnboardingContainerViewController: OnboardingViewControllerDelegate {
     func onBackPressed() {
-        print("back pressed")
+        self.pageViewController.setViewControllers([getPreviousViewController(from: currentVC)!], direction: .reverse, animated: true)
     }
     
     func onNextPressed() {
-        print("next pressed")
+        self.pageViewController.setViewControllers([getNextViewController(from: currentVC)!], direction: .forward, animated: true)
     }
     
     func onDonePressed() {

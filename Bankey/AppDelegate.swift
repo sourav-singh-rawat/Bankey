@@ -58,8 +58,13 @@ extension AppDelegate {
 
 extension AppDelegate: LoginViewControllerDelegate {
     func didLogin() {
-        onboardingContainerViewController.delegate = self
-        setRootViewController(onboardingContainerViewController)
+        if LocalState.hasOnboarded{
+            dummyViewController.logoutDelegate = self
+            setRootViewController(dummyViewController)
+        }else {
+            onboardingContainerViewController.delegate = self
+            setRootViewController(onboardingContainerViewController)
+        }
     }
 }
 
@@ -69,6 +74,8 @@ extension AppDelegate: OnboardingContainerViewControllerDelegate {
     func didFinishOnboarding() {
         dummyViewController.logoutDelegate = self
         setRootViewController(dummyViewController)
+    
+        LocalState.hasOnboarded = true
     }
 }
 
